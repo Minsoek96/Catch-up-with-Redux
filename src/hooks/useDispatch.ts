@@ -1,9 +1,12 @@
-import useStore from '../hooks/useStore';
+import {container} from 'tsyringe';
+
 import {type Action} from '../stores/BaseStore';
 
-export default function useDispatch() {
-	const store = useStore();
-	return (action: Action) => {
+import {CounterStore} from '../stores/CounterStore';
+
+export default function useDispatch<Payload>() {
+	const store = container.resolve(CounterStore);
+	return (action: Action<Payload>) => {
 		store.dispatch(action);
 	};
 }

@@ -11,26 +11,32 @@ const initialState: State = {
 	name: 'Tester',
 };
 
-function reducer(state: State, action: Action) {
-	switch (action.type) {
-		case 'increase':
-			return {
-				...state,
-				count: state.count + 1,
-			};
-		case 'decrease':
-			return {
-				...state,
-				count: state.count - 1,
-			};
-		default:
-			return state;
-	}
+const reducers = {
+	increase(state: State, action: Action<number>) {
+		return {
+			...state,
+			count: state.count + (action.payload ?? 1),
+		};
+	},
+	decrease(state: State, action: Action<number>) {
+		return {
+			...state,
+			count: state.count - (action.payload ?? 1),
+		};
+	},
+};
+
+export function increase(step?: number) {
+	return {type: 'increase', payload: step};
+}
+
+export function decrease() {
+	return {type: 'increase'};
 }
 
 @singleton()
 export class CounterStore extends BaseStore<State> {
 	constructor() {
-		super(initialState, reducer);
+		super(initialState, reducers);
 	}
 }
