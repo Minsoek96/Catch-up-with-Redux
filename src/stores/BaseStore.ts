@@ -1,19 +1,23 @@
-import {singleton} from 'tsyringe';
+export type Action = {
+	type: string;
+};
+
+type Reducer<State> = (state: State, action: Action) => State;
 type Listner = () => void;
 
-@singleton()
-export class Store {
-	count = 0;
+export class BaseStore<State> {
+	state: State;
+	// eslint-disable-next-line @typescript-eslint/parameter-properties
+	reducer: Reducer<State>;
 
 	listner = new Set<Listner>();
-
-	increase() {
-		this.count += 1;
-		this.forceupdate();
+	constructor(initialState: State, reducer: Reducer<State>) {
+		this.state = initialState;
+		this.reducer = reducer;
 	}
 
-	decrease() {
-		this.count -= 1;
+	dispatch(action: Action) {
+		this.state = this.reducer(this.state, action);
 		this.forceupdate();
 	}
 
