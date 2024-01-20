@@ -1,9 +1,9 @@
-import {useStore} from '../hooks/useStore';
+import useStore from '../hooks/useStore';
 import {type Action} from '../stores/BaseStore';
 
-export const useDispatch = () => {
+export default function useDispatch() {
 	const store = useStore();
 	return (action: Action) => {
 		store.dispatch(action);
 	};
-};
+}

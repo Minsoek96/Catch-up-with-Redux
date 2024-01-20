@@ -1,10 +1,10 @@
+import CountControl from './components/CountControl';
 import Counter from './components/Counter';
-import CounterControl from './components/CounterControl';
 
 const App = () => (
 	<div>
 		<Counter/>
-		<CounterControl/>
+		<CountControl/>
 	</div>
 );
 

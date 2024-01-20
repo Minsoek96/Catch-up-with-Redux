@@ -1,37 +1,36 @@
+type Listener = () => void;
+
 export type Action = {
 	type: string;
 };
 
-type Reducer<State> = (state: State, action: Action) => State;
-type Listner = () => void;
+type Reducer<S> = (state: S, action: Action) => S;
 
-export class BaseStore<State> {
-	state: State;
-	// eslint-disable-next-line @typescript-eslint/parameter-properties
-	reducer: Reducer<State>;
+export class BaseStore<S> {
+	state: S;
 
-	listner = new Set<Listner>();
-	constructor(initialState: State, reducer: Reducer<State>) {
+	listeners = new Set<Listener>();
+
+	constructor(initialState: S, private readonly reducer: Reducer<S>) {
 		this.state = initialState;
-		this.reducer = reducer;
 	}
 
 	dispatch(action: Action) {
 		this.state = this.reducer(this.state, action);
-		this.forceupdate();
+		this.forceUpdate();
 	}
 
-	forceupdate() {
-		this.listner.forEach(listner => {
-			listner();
+	forceUpdate() {
+		this.listeners.forEach(listener => {
+			listener();
 		});
 	}
 
-	addListner(listner: Listner) {
-		this.listner.add(listner);
+	addListener(listener: Listener) {
+		this.listeners.add(listener);
 	}
 
-	removeListner(listner: Listner) {
-		this.listner.delete(listner);
+	removeListener(listener: Listener) {
+		this.listeners.delete(listener);
 	}
 }

@@ -1,18 +1,16 @@
 import {container} from 'tsyringe';
-import {Store} from '../stores/Store';
+import useForceUpdate from '../hooks/useForceUpdate';
 import {useEffect} from 'react';
-import useForceUpdate from './useForceUpdate';
+import {CounterStore} from '../stores/CounterStore';
 
-export const useStore = () => {
-	const currentStore = container.resolve(Store);
+export default function useStore() {
+	const store = container.resolve(CounterStore);
 	const forceUpdate = useForceUpdate();
-
 	useEffect(() => {
-		currentStore.addListner(forceUpdate);
+		store.addListener(forceUpdate);
 		return () => {
-			currentStore.removeListner(forceUpdate);
+			store.removeListener(forceUpdate);
 		};
-	}, [currentStore, forceUpdate]);
-
-	return currentStore;
-};
+	}, [forceUpdate, store]);
+	return store;
+}

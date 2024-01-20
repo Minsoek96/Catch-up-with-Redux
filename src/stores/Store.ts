@@ -1,50 +1,33 @@
 import {singleton} from 'tsyringe';
-
-import {type Action, BaseStore} from './BaseStore';
 type Listner = () => void;
 
-const initialState = {
-	count: 0,
-	name: '',
-};
+@singleton()
+export class Store {
+	count = 0;
 
-export type State = typeof initialState;
+	listner = new Set<Listner>();
 
-const reducers = {
-	 increase(state: State, action: Action) {
-		return {
-			...state,
-			count: state.count + 1,
-		};
-	},
-	decrease(state: State, action: Action) {
-		return {
-			...state,
-			count: state.count - 1,
-		};
-	},
-};
-
-function reducer(state: State, action: Action) {
-	const f = Reflect.get(reducers, action.type);
-	if (!f) {
-		return state;
+	increase() {
+		this.count += 1;
+		this.forceupdate();
 	}
 
-	return f(state, aciton);
-}
+	decrease() {
+		this.count -= 1;
+		this.forceupdate();
+	}
 
-export function increase() {
-	return {type: 'increase'};
-}
+	forceupdate() {
+		this.listner.forEach(listner => {
+			listner();
+		});
+	}
 
-export function decrease() {
-	return {type: 'decrease'};
-}
+	addListner(listner: Listner) {
+		this.listner.add(listner);
+	}
 
-@singleton()
-export class Store extends BaseStore<State> {
-	constructor() {
-		super(initialState, reducer);
+	removeListner(listner: Listner) {
+		this.listner.delete(listner);
 	}
 }

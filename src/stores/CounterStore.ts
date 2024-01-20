@@ -1,33 +1,36 @@
 import {singleton} from 'tsyringe';
-type Listner = () => void;
+import {type Action, BaseStore} from './BaseStore';
+
+export type State = {
+	count: number;
+	name: string;
+};
+
+const initialState: State = {
+	count: 0,
+	name: 'Tester',
+};
+
+function reducer(state: State, action: Action) {
+	switch (action.type) {
+		case 'increase':
+			return {
+				...state,
+				count: state.count + 1,
+			};
+		case 'decrease':
+			return {
+				...state,
+				count: state.count - 1,
+			};
+		default:
+			return state;
+	}
+}
 
 @singleton()
-export class CounterStore {
-	count = 0;
-
-	listner = new Set<Listner>();
-
-	increase() {
-		this.count += 1;
-		this.forceupdate();
-	}
-
-	decrease() {
-		this.count -= 1;
-		this.forceupdate();
-	}
-
-	forceupdate() {
-		this.listner.forEach(listner => {
-			listner();
-		});
-	}
-
-	addListner(listner: Listner) {
-		this.listner.add(listner);
-	}
-
-	removeListner(listner: Listner) {
-		this.listner.delete(listner);
+export class CounterStore extends BaseStore<State> {
+	constructor() {
+		super(initialState, reducer);
 	}
 }
