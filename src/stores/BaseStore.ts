@@ -1,4 +1,3 @@
-
 type Listener = () => void;
 
 export type Action<Payload> = {
